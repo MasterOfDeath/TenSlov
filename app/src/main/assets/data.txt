@@ -1,0 +1,22 @@
+table:!:стол
+show:!:показывать
+snow:!:снег
+elephant:!:слон
+spike:!:шип
+spider:!:паук
+lesson:!:урок
+shop:!:магазин
+watch:!:часы
+plant:!:растение
+tree:!:дерево
+flat:!:квартира
+good:!:хорошо
+ring:!:круг, кольцо
+whistle:!:свисток
+wheel:!:колесо
+apple:!:яблоко
+pie:!:пирог
+ice cream:!:мороженное
+spell:!:произносить
+wizard:!:волшебник
+road:!:дорога
