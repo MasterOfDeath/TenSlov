@@ -11,26 +11,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class HomeActivityFragment extends Fragment {
 
     private View.OnClickListener btnStartClick = new View.OnClickListener() {
         public void onClick(View v) {
-            StudyPage newFragment = new StudyPage();
+            StudyPage fragStudyPage = new StudyPage();
             Bundle args = new Bundle();
-            //args.putInt(StudyPage.ARG_POSITION, position);
-            newFragment.setArguments(args);
+            fragStudyPage.setArguments(args);
 
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-// Replace whatever is in the fragment_container view with this fragment,
-// and add the transaction to the back stack so the user can navigate back
-            transaction.replace(R.id.fragment_container, newFragment);
+            transaction.replace(R.id.fragment_container, fragStudyPage);
             transaction.addToBackStack(null);
 
-// Commit the transaction
             transaction.commit();
         }
     };

@@ -1,18 +1,28 @@
 package ru.rinat.tenslov;
 
-import android.net.Uri;
+
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class HomeActivity extends ActionBarActivity implements StudyPage.OnFragmentInteractionListener {
+public class HomeActivity extends ActionBarActivity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+
+        //Отображаем основной фрагмент
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        HomeActivityFragment fragHome = new HomeActivityFragment();
+        transaction.add(R.id.fragment_container, fragHome);
+        transaction.commit();
     }
 
 
@@ -36,10 +46,5 @@ public class HomeActivity extends ActionBarActivity implements StudyPage.OnFragm
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }

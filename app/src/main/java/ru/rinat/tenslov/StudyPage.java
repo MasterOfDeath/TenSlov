@@ -1,109 +1,90 @@
 package ru.rinat.tenslov;
 
-import android.app.Activity;
-import android.net.Uri;
+
+import android.content.Context;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import java.util.concurrent.TimeUnit;
 
 
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link StudyPage.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link StudyPage#newInstance} factory method to
- * create an instance of this fragment.
  */
-public class StudyPage extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class StudyPage extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment StudyPage.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static StudyPage newInstance(String param1, String param2) {
-        StudyPage fragment = new StudyPage();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private SimpleCursorAdapter scAdapter;
 
     public StudyPage() {
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_study_page, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_study_page, container, false);
+
+
+
+        String[] from = new String[] { Word.COL_WORD, Word.COL_TRANS };
+        int[] to = new int[] { R.id.tvListStudy1, R.id.tvListStudy2 };
+
+        scAdapter =
+                new SimpleCursorAdapter(getActivity(), R.layout.list_sudy, null, from, to, 0);
+        ListView lvStudy = (ListView) rootView.findViewById(R.id.lvStudy);
+        lvStudy.setAdapter(scAdapter);
+
+        // создаем лоадер для чтения данных
+        getLoaderManager().initLoader(0, null, this);
+
+
+        return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle bndl) {
+        return new MyCursorLoader(getActivity(), App.mDbHelper);
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        scAdapter.swapCursor(cursor);
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+
+    static class MyCursorLoader extends CursorLoader {
+
+        DBHelper db;
+
+        public MyCursorLoader(Context context, DBHelper db) {
+            super(context);
+            this.db = db;
+        }
+
+        @Override
+        public Cursor loadInBackground() {
+            //Cursor cursor = db.getAllData();
+            Cursor cursor = App.mDbHelper.nextTenWords();
+
+            return cursor;
+        }
+
     }
 
 }
