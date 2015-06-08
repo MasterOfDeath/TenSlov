@@ -9,12 +9,11 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -23,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 public class StudyPage extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private SimpleCursorAdapter scAdapter;
+
+    View rootView;
 
     public StudyPage() {
         // Required empty public constructor
@@ -33,9 +34,7 @@ public class StudyPage extends Fragment implements LoaderManager.LoaderCallbacks
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_study_page, container, false);
-
-
+        rootView = inflater.inflate(R.layout.fragment_study_page, container, false);
 
         String[] from = new String[] { Word.COL_WORD, Word.COL_TRANS };
         int[] to = new int[] { R.id.tvListStudy1, R.id.tvListStudy2 };
@@ -47,7 +46,6 @@ public class StudyPage extends Fragment implements LoaderManager.LoaderCallbacks
 
         // создаем лоадер для чтения данных
         getLoaderManager().initLoader(0, null, this);
-
 
         return rootView;
     }
@@ -80,9 +78,10 @@ public class StudyPage extends Fragment implements LoaderManager.LoaderCallbacks
         @Override
         public Cursor loadInBackground() {
             //Cursor cursor = db.getAllData();
-            Cursor cursor = App.mDbHelper.nextTenWords();
+            //Cursor cursor = App.mDbHelper.nextTenWords();
+            //App.mDbHelper.cursorTen = App.mDbHelper.nextTenWords();
 
-            return cursor;
+            return App.mDbHelper.nextTenWords();
         }
 
     }

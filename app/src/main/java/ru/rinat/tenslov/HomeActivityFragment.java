@@ -13,15 +13,17 @@ import android.widget.TextView;
 
 public class HomeActivityFragment extends Fragment {
 
+    View rootView;
+
     private View.OnClickListener btnStartClick = new View.OnClickListener() {
         public void onClick(View v) {
-            StudyPage fragStudyPage = new StudyPage();
+            Pager fragPager = new Pager();
             Bundle args = new Bundle();
-            fragStudyPage.setArguments(args);
+            fragPager.setArguments(args);
 
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-            transaction.replace(R.id.fragment_container, fragStudyPage);
+            transaction.replace(R.id.fragment_container, fragPager);
             transaction.addToBackStack(null);
 
             transaction.commit();
@@ -34,7 +36,7 @@ public class HomeActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         TextView homeLabel = (TextView) rootView.findViewById(R.id.home_label);
         Button btnStart = (Button) rootView.findViewById(R.id.btn_start);
@@ -49,7 +51,7 @@ public class HomeActivityFragment extends Fragment {
             btnStart.setText(R.string.btn_start_1);
         }
 
-        //Cursor cursor = App.mDbHelper.nextTenWords();
+        //App.mDbHelper.cursorTen = App.mDbHelper.nextTenWords();
 
         //App.mDbHelper.completeTest(cursor);
 

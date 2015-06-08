@@ -10,13 +10,10 @@ import android.view.MenuItem;
 
 public class HomeActivity extends ActionBarActivity {
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
 
         //Отображаем основной фрагмент
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -47,4 +44,6 @@ public class HomeActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

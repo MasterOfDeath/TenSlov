@@ -16,11 +16,15 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 
 /**
  * Created by rinat on 03.06.15.
  */
 public class DBHelper extends SQLiteOpenHelper {
+
+    private Cursor cursorTen;
+    private SQLiteDatabase db = this.getReadableDatabase();
 
     final static int DB_VER = 1;
     final static String DB_NAME = "dict.db";
@@ -50,11 +54,14 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DB_VER);
         Log.d(DEBUG_TAG, "constructor called");
         mContext = context;
+
+        //Init cursorTen
+        nextTenWords();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d(DEBUG_TAG,"onCreate() called");
+        Log.d(DEBUG_TAG, "onCreate() called");
         db.execSQL(CREATE_TABLE1);
         db.execSQL(CREATE_TABLE2);
         fillData(db);
@@ -114,18 +121,77 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public synchronized boolean workToday(){
-        final SQLiteDatabase db = this.getReadableDatabase();
         final Cursor cursor = db.query(
                 Word.TABLE_NAME,
                 Word.FIELDS,
                 Word.COL_STUD + " = ?",
-                new String[] { getCurrentDate() },
+                new String[]{getCurrentDate()},
                 null, null, null, null);
 
         return (cursor.getCount() != 0);
     }
 
-    public synchronized Cursor nextTenWords(){
+    public synchronized Cursor nextTenWords() {
+        cursorTen = db.query(
+                Word.TABLE_NAME,
+                Word.FIELDS,
+                Word.COL_STUD + " = ?",
+                new String[] { "0" },
+                null, null, null, "10");
+
+        return cursorTen;
+    }
+
+    public synchronized Cursor getCurTenWords() {
+        cursorTen.moveToFirst();
+
+        return cursorTen;
+    }
+
+    public synchronized int getCountTenWords(){
+        return cursorTen.getCount();
+    }
+
+    public synchronized String [] getTestForWord(int positionOfPage) {
+        Random rand = new Random();
+
+        String[] array = {"null" , "null" , "null" , "null" , "null"};
+        int positionOfCursor = positionOfPage - 1;
+
+        if ( (positionOfCursor < 0) | (positionOfCursor >= getCountTenWords()) )
+            return array;
+
+        cursorTen.moveToPosition(positionOfCursor);
+        /*int curRec = cursorTen.getPosition();
+
+        array[0] = cursorTen.getString(1);
+        array[1] = cursorTen.getString(2);
+
+        cursorTen.moveToFirst();
+
+        final SQLiteDatabase dbAll = this.getReadableDatabase();
+        Cursor cursor = dbAll.query(
+                Word.TABLE_NAME,
+                Word.FIELDS,
+                null, null, null, null, null, null);
+
+        int countRecs = cursor.getCount();
+
+        for (int i = 2; i < 5; i++) {
+            int rec = rand.nextInt(countRecs);
+
+            while (rec == curRec) {
+                rec = rand.nextInt(countRecs);
+            }
+
+            cursor.moveToPosition(rec);
+            array[i] = cursor.getString(2);
+        }*/
+
+        return array;
+    }
+
+    /*public synchronized Cursor nextTenWords(){
         final SQLiteDatabase db = this.getReadableDatabase();
         final Cursor cursor = db.query(
                 Word.TABLE_NAME,
@@ -135,10 +201,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 null, null, null, "10");
 
         return cursor;
-    }
+    }*/
 
     public synchronized void completeTest(Cursor cursor){
-        final SQLiteDatabase db = this.getWritableDatabase();
+        final SQLiteDatabase dbRW = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
         cursor.moveToFirst();
@@ -146,7 +212,7 @@ public class DBHelper extends SQLiteOpenHelper {
         for (int i = 0; i < cursor.getCount(); i++) {
             DatabaseUtils.cursorRowToContentValues(cursor, cv);
             cv.put(Word.COL_STUD, getCurrentDate());
-            db.update(
+            dbRW.update(
                     Word.TABLE_NAME,
                     cv,
                     Word.COL_ID + " = ?",
