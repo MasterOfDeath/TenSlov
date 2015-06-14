@@ -23,7 +23,7 @@ public class HomeActivityFragment extends Fragment {
 
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
 
-            transaction.replace(R.id.fragment_container, fragPager);
+            transaction.replace(R.id.fragment_container, fragPager, "FragPager");
             transaction.addToBackStack(null);
 
             transaction.commit();

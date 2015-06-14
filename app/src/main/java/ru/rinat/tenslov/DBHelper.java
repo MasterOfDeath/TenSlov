@@ -19,12 +19,11 @@ import java.util.Calendar;
 import java.util.Random;
 
 /**
- * Created by rinat on 03.06.15.
+ * rinat on 03.06.15.
  */
 public class DBHelper extends SQLiteOpenHelper {
 
     private Cursor cursorTen;
-    private SQLiteDatabase db = this.getReadableDatabase();
 
     final static int DB_VER = 1;
     final static String DB_NAME = "dict.db";
@@ -77,6 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private ArrayList<String> getData() {
         InputStream stream = null;
         ArrayList<String> list = new ArrayList<>();
+
         try {
             stream = mContext.getAssets().open(DATA_FILE_NAME);
         }
@@ -121,6 +121,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public synchronized boolean workToday(){
+        SQLiteDatabase db = this.getReadableDatabase();
         final Cursor cursor = db.query(
                 Word.TABLE_NAME,
                 Word.FIELDS,
@@ -132,6 +133,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public synchronized Cursor nextTenWords() {
+        SQLiteDatabase db = this.getReadableDatabase();
         cursorTen = db.query(
                 Word.TABLE_NAME,
                 Word.FIELDS,
@@ -152,20 +154,22 @@ public class DBHelper extends SQLiteOpenHelper {
         return cursorTen.getCount();
     }
 
-    public synchronized String [] getTestForWord(int positionOfPage) {
+    public synchronized TestValue getTestForWord(int positionOfPage) {
         Random rand = new Random();
+        TestValue mTestValue = new TestValue(-1,"null",-1,"null",-1,"null",-1,"null",-1,"null");
 
-        String[] array = {"null" , "null" , "null" , "null" , "null"};
         int positionOfCursor = positionOfPage - 1;
 
         if ( (positionOfCursor < 0) | (positionOfCursor >= getCountTenWords()) )
-            return array;
+            return mTestValue;
+
+        if (cursorTen.isClosed()) nextTenWords();
 
         cursorTen.moveToPosition(positionOfCursor);
-        /*int curRec = cursorTen.getPosition();
+        int curRec = cursorTen.getPosition();
 
-        array[0] = cursorTen.getString(1);
-        array[1] = cursorTen.getString(2);
+        mTestValue.setValue(0, cursorTen.getInt(0), cursorTen.getString(1));
+        mTestValue.setValue(1, cursorTen.getInt(0), cursorTen.getString(2));
 
         cursorTen.moveToFirst();
 
@@ -185,10 +189,14 @@ public class DBHelper extends SQLiteOpenHelper {
             }
 
             cursor.moveToPosition(rec);
-            array[i] = cursor.getString(2);
-        }*/
+            mTestValue.setValue(i, cursor.getInt(0), cursor.getString(2));
+        }
 
-        return array;
+        cursor.close();
+
+        mTestValue.shuffleValues();
+
+        return mTestValue;
     }
 
     /*public synchronized Cursor nextTenWords(){
@@ -229,5 +237,15 @@ public class DBHelper extends SQLiteOpenHelper {
         SimpleDateFormat format = new SimpleDateFormat("ddMMyy");
         return format.format(cal.getTime());
     }
+
+    /*static void shuffleArray(String[][] array) {
+        Random rnd = new Random();
+        for (int i = array.length - 1; i > 1; i--) {
+            int index = rnd.nextInt(i) + 1; //Первую строку не трогаем
+            String[] a = array[index];
+            array[index] = array[i];
+            array[i] = a;
+        }
+    }*/
 }
 

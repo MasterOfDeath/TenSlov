@@ -1,10 +1,9 @@
 package ru.rinat.tenslov;
 
 import android.app.Application;
-import android.database.Cursor;
 
 /**
- * Created by rinat on 03.06.15.
+ * rinat on 03.06.15.
  */
 public class App extends Application {
     public static DBHelper mDbHelper;
