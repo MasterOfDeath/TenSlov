@@ -6,13 +6,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class SummaryPage extends Fragment {
+public class SummaryPage extends Fragment implements Pager.PagerOnSummaryPageCallbacks {
 
+    View rootView;
+    TextView tvSummary;
 
     public SummaryPage() {
         // Required empty public constructor
@@ -22,9 +22,17 @@ public class SummaryPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_summary_page, container, false);
+        rootView = inflater.inflate(R.layout.fragment_summary_page, container, false);
+
+        tvSummary = (TextView)rootView.findViewById(R.id.tvSummary);
+
+        return rootView;
     }
 
 
+    @Override
+    public void onSummaryPageSelected(Boolean check) {
+        if (check) tvSummary.setText(R.string.tv_summary_success);
+        if (!check) tvSummary.setText(R.string.tv_summary_bad);
+    }
 }

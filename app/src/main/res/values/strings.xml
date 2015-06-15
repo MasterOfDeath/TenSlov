@@ -1,11 +1,8 @@
 <resources>
     <string name="app_name">TenSlov</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="home_label_1">Сегодня вы ещё не изучали новые слова</string>
     <string name="btn_start_1">Выучить новые \n слова</string>
-    <string name="test">Test вые \n слова</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tv_summary_success">Вы УСПЕШНО!!! справились\n с заданием</string>
+    <string name="tv_summary_bad">Вы допустили ОШИБКУ\n попробуйте снова</string>
 </resources>

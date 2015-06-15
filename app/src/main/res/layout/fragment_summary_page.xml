@@ -22,7 +22,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:text="klujkl;io;i"/>
+                android:text="@string/tv_summary_success"/>
 
         </RelativeLayout>
 

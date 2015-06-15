@@ -82,12 +82,10 @@ public class TestPage extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        Pager pagerFrag = (Pager) getParentFragment();
-
         try {
-            mCallbacks = (TestPageCallbacks) pagerFrag;
+            mCallbacks = (TestPageCallbacks) getParentFragment();
         } catch (ClassCastException e) {
-            throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
+            throw new ClassCastException("Activity must implement TestPageCallbacks.");
         }
     }
 

@@ -22,6 +22,9 @@ public class Pager extends Fragment implements TestPage.TestPageCallbacks {
     ViewPager pager;
     PagerAdapter pagerAdapter;
     Boolean[] array;
+    SummaryPage summaryPage;
+
+    PagerOnSummaryPageCallbacks mPagerCallbacks;
 
     int PAGE_COUNT = App.mDbHelper.getCountTenWords() + 2;
     int TEST_PAGE_COUNT = PAGE_COUNT - 2;
@@ -40,16 +43,22 @@ public class Pager extends Fragment implements TestPage.TestPageCallbacks {
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-                // TODO Auto-generated method stub
-                Log.d("Page", Integer.toString(position));
                 if (position == PAGE_COUNT - 1) {
+
+                    if(mPagerCallbacks == null) {
+                        try {
+                            mPagerCallbacks = (PagerOnSummaryPageCallbacks) summaryPage;
+                        } catch (ClassCastException e) {
+                            throw new ClassCastException("Activity must implement PagerOnSummaryPageCallbacks.");
+                        }
+                    }
                     Boolean b = true;
                     for (int i = 0; i < array.length; i++) {
                         if (!array[i]) b = false;
                     }
 
-                    if (b) Log.d("log","succeses");
-                    if (!b) Log.d("log","bad");
+                    mPagerCallbacks.onSummaryPageSelected(b);
+
                 }
             }
 
@@ -75,6 +84,12 @@ public class Pager extends Fragment implements TestPage.TestPageCallbacks {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        mPagerCallbacks = null;
+    }
+
+    @Override
     public void onQuestItemSelected(int position, Boolean check) {
         array[position] = check;
     }
@@ -90,7 +105,10 @@ public class Pager extends Fragment implements TestPage.TestPageCallbacks {
         public Fragment getItem(int position) {
 
             if (position == STUDY_PAGE) return new StudyPage();
-            if (position == SUMMARY_PAGE) return new SummaryPage();
+            if (position == SUMMARY_PAGE) {
+                summaryPage = new SummaryPage();
+                return summaryPage;
+            }
 
             return TestPage.newInstance(position);
         }
@@ -101,4 +119,9 @@ public class Pager extends Fragment implements TestPage.TestPageCallbacks {
         }
 
     }
+
+    public interface PagerOnSummaryPageCallbacks {
+        void onSummaryPageSelected(Boolean check);
+    }
+
 }
